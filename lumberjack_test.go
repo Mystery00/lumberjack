@@ -738,6 +738,7 @@ func TestJson(t *testing.T) {
 	"maxbackups": 3,
 	"localtime": true,
 	"compress": true,
+	"splitByDay": true,
 	"backupTimeFormat": "20060102.15.04.05"
 }`[1:])
 
@@ -750,6 +751,7 @@ func TestJson(t *testing.T) {
 	equals(3, l.MaxBackups, t)
 	equals(true, l.LocalTime, t)
 	equals(true, l.Compress, t)
+	equals(true, l.SplitByDay, t)
 	equals("20060102.15.04.05", l.BackupTimeFormat, t)
 }
 
@@ -761,6 +763,7 @@ maxage: 10
 maxbackups: 3
 localtime: true
 compress: true
+splitByDay: true
 backupTimeFormat: 20060102.15.04.05`[1:])
 
 	l := Logger{}
@@ -772,6 +775,7 @@ backupTimeFormat: 20060102.15.04.05`[1:])
 	equals(3, l.MaxBackups, t)
 	equals(true, l.LocalTime, t)
 	equals(true, l.Compress, t)
+	equals(true, l.SplitByDay, t)
 	equals("20060102.15.04.05", l.BackupTimeFormat, t)
 }
 
@@ -783,6 +787,7 @@ maxage = 10
 maxbackups = 3
 localtime = true
 compress = true
+splitByDay = true
 backupTimeFormat = "20060102.15.04.05"`[1:]
 
 	l := Logger{}
@@ -794,6 +799,7 @@ backupTimeFormat = "20060102.15.04.05"`[1:]
 	equals(3, l.MaxBackups, t)
 	equals(true, l.LocalTime, t)
 	equals(true, l.Compress, t)
+	equals(true, l.SplitByDay, t)
 	equals(0, len(md.Undecoded()), t)
 	equals("20060102.15.04.05", l.BackupTimeFormat, t)
 }

@@ -111,6 +111,9 @@ type Logger struct {
 	// using gzip. The default is not to perform compression.
 	Compress bool `json:"compress" yaml:"compress"`
 
+	// Split log files by day. Default is false.
+	SplitByDay bool `json:"splitByDay" yaml:"splitByDay"`
+
 	size int64
 	file *os.File
 	mu   sync.Mutex
@@ -130,6 +133,9 @@ var (
 	// variable so tests can mock it out and not need to write megabytes of data
 	// to disk.
 	megabyte = 1024 * 1024
+
+	// last write log time
+	lastWriteTime = time.Now()
 )
 
 // Write implements io.Writer.  If a write would cause the log file to be larger
@@ -157,6 +163,16 @@ func (l *Logger) Write(p []byte) (n int, err error) {
 		if err := l.rotate(); err != nil {
 			return 0, err
 		}
+	}
+
+	if l.SplitByDay {
+		nowTime := time.Now()
+		if lastWriteTime.Format("2006-01-02") != nowTime.Format("2006-01-02") {
+			if err := l.rotate(); err != nil {
+				return 0, err
+			}
+		}
+		lastWriteTime = nowTime
 	}
 
 	n, err = l.file.Write(p)
